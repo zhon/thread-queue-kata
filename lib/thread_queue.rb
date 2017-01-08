@@ -7,7 +7,7 @@ class ThreadQueue
   end
 
   def add item
-
+    item.call
   end
 
 end
