@@ -1,5 +1,13 @@
 require "thread_queue/version"
 
-module ThreadQueue
+class ThreadQueue
+
+  def initialize *args
+
+  end
+
+  def add item
+
+  end
 
 end
