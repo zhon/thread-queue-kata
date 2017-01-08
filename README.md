@@ -27,7 +27,7 @@ You have ``bundle`` installed (``gem install bundle``)
 ```ruby
 describe ThreadQueue do
 
-  it 'will run all jobs added' do
+  it 'runs all jobs' do
     property_of {
       range 1, 100
     }.check {|tc|
@@ -50,7 +50,6 @@ end
 class ThreadQueue
 
   def initialize *args
-
   end
 
   def add item
@@ -60,5 +59,47 @@ class ThreadQueue
 end
 ```
 
+### 1.0.2 Fail
 
+``test/thread_queue_test.rb``
+```ruby
+  it 'runs jobs concurrently' do
+    property_of {
+      range 1, 10
+    }.check {|tc|
+      tp = ThreadQueue.new(tc)
+      t = Time.now.to_f
+      tc.times do
+        tp.add -> { sleep 0.01  }
+      end
+      (Time.now.to_f - t).must_be :<, 0.01 + 0.002 * tc , "Thread count #{tc}"
+    }
+  end
+```
+
+### 1.0.3 Pass (sorta)
+
+``lib/thread_queue.rb``
+```ruby
+  def add item
+    Thread.new {
+      item.call
+    }
+  end
+```
+
+``test/thread_queue_test.rb``
+```diff
+  it 'runs all jobs' do
+    .
+    .
+    .
+      tc.times do
+        tp.add -> { count += 1  }
+      end
++      sleep 0.003
+      count.must_equal tc
+    }
+  end
+```
 
