@@ -119,18 +119,38 @@ end
   end
 ```
 
-
-
 ``lib/thread_queue.rb``
 ```ruby
 class ThreadQueue
   .
   .
   .
-
   def join
     sleep 0.003
   end
 ```
 
+Sleep in an implementation is a code smell.
+
+
+``lib/thread_queue.rb``
+```ruby
+class ThreadQueue
+
+  def initialize *args
+    @threads = []
+  end
+
+  def add item
+    @threads << Thread.new {
+      item.call
+    }
+  end
+
+  def join
+    @threads.each(&:join)
+  end
+
+end
+```
 
