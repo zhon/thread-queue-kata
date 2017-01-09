@@ -130,6 +130,9 @@ class ThreadQueue
   end
 ```
 
+### 1.0.5 Refactor to real implementation
+
+
 Sleep in an implementation is a code smell.
 
 
@@ -152,5 +155,22 @@ class ThreadQueue
   end
 
 end
+```
+
+Join will help out our ``concurrent`` test also.
+
+``test/thread_queue_test.rb``
+```diff
+  it 'runs jobs concurrently' do
+    .
+    .
+    .
+      tc.times do
+        tp.add -> { sleep 0.01  }
+      end
++      tp.join
+      (Time.now.to_f - t).must_be :<, 0.01 + 0.002 * tc , "Thread count #{tc}"
+    }
+  end
 ```
 
