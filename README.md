@@ -103,3 +103,34 @@ end
   end
 ```
 
+### 1.0.4 Refactor
+
+
+``test/thread_queue_test.rb``
+```diff
+  it 'runs all jobs' do
+      tc.times do
+        tp.add -> { count += 1  }
+      end
+-      sleep 0.003
++      tp.join
+      count.must_equal tc
+    }
+  end
+```
+
+
+
+``lib/thread_queue.rb``
+```ruby
+class ThreadQueue
+  .
+  .
+  .
+
+  def join
+    sleep 0.003
+  end
+```
+
+
